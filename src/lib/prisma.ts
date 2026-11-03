@@ -21,7 +21,7 @@ if (
   process.env.DATABASE_URL = vercelPostgresUrl;
 }
 
-const activeUrl = process.env.DATABASE_URL || vercelPostgresUrl;
+const activeUrl = vercelPostgresUrl || process.env.DATABASE_URL;
 
 export const prisma =
   globalForPrisma.prisma ??
