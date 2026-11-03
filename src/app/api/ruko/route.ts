@@ -45,7 +45,10 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Error fetching rukos:", error);
     return NextResponse.json(
-      { error: "Gagal memuat daftar ruko" },
+      { 
+        error: "Gagal memuat daftar ruko",
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

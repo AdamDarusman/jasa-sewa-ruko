@@ -6,8 +6,11 @@ const globalForPrisma = globalThis as unknown as {
 
 const dbUrl =
   process.env.DATABASE_URL ||
-  process.env.STORAGE_SEWA_RUKO_POSTGRES_PRISMA_URL ||
+  process.env.STORAGE_SEWA_RUKO_DATABASE_URL_POOLED ||
+  process.env.STORAGE_SEWA_RUKO_DATABASE_URL ||
   process.env.STORAGE_SEWA_RUKO_POSTGRES_URL ||
+  process.env.STORAGE_SEWA_RUKO_PRISMA_DATABASE_URL ||
+  process.env.STORAGE_SEWA_RUKO_POSTGRES_PRISMA_URL ||
   process.env.STORAGE_SEWA_RUKO_URL_POOLED ||
   process.env.POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_URL;
