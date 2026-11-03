@@ -25,6 +25,8 @@ export async function GET() {
     rukoCount,
     error: errorMsg,
     availableEnvKeys: envKeys,
+    databaseUrlProtocol: process.env.DATABASE_URL ? process.env.DATABASE_URL.split(":")[0] : null,
+    storagePostgresProtocol: process.env.STORAGE_SEWA_RUKO_POSTGRES_URL ? process.env.STORAGE_SEWA_RUKO_POSTGRES_URL.split(":")[0] : null,
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
     nodeEnv: process.env.NODE_ENV,
   });
