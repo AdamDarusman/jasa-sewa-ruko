@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  phone     String?
+  role      String    @default("USER") // "ADMIN" or "USER"
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+}
+
+model Ruko {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  description   String
+  address       String
+  city          String
+  pricePerYear  Float
+  pricePerMonth Float
+  buildingArea  Int       // Luas Bangunan m2
+  landArea      Int       // Luas Tanah m2
+  floors        Int       @default(2) // Jumlah lantai
+  electricity   String    @default("2200 VA")
+  water         String    @default("PDAM / Air Tanah")
+  certType      String    @default("SHGB / SHM")
+  facilities    String    // Format JSON array string: ["Parkir Luas", "Toilet Setiap Lantai", "CCTV", "Akses 24 Jam"]
+  imageUrl      String    // Primary image
+  images        String?   // JSON array string optional
+  status        String    @default("AVAILABLE") // "AVAILABLE", "RENTED", "MAINTENANCE"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+}
+
+model Booking {
+  id              String       @id @default(uuid())
+  orderNumber     String       @unique // Contoh: INV-20261102-0001
+  userId          String
+  rukoId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ruko            Ruko         @relation(fields: [rukoId], references: [id], onDelete: Cascade)
+  startDate       DateTime
+  durationMonths  Int          // misal: 6 atau 12 bulan
+  endDate         DateTime
+  totalAmount     Float
+  status          String       @default("PENDING") // "PENDING", "PAID", "CANCELLED", "EXPIRED"
+  paymentType     String?      // e.g. "qris", "bank_transfer", "echannel", "simulator"
+  snapToken       String?
+  snapRedirectUrl String?
+  paidAt          DateTime?
+  notes           String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  paymentLogs     PaymentLog[]
+}
+
+model PaymentLog {
+  id              String   @id @default(uuid())
+  bookingId       String?
+  orderNumber     String
+  rawStatus       String
+  paymentType     String?
+  transactionTime DateTime @default(now())
+  createdAt       DateTime @default(now())
+  booking         Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+}
