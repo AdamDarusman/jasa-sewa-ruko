@@ -49,7 +49,7 @@ async function main() {
 
   console.log("Created users:", admin.email, tenant1.email, tenant2.email);
 
-  // 4. Create Rukos
+  // 4. Create Rukos (All Real Commercial Shop-Houses / Ruko)
   const rukosData = [
     {
       title: "Ruko Pamulang Square Point No. 8",
@@ -66,7 +66,7 @@ async function main() {
       water: "Air Tanah Bersih + Toren",
       certType: "SHM (Sertifikat Hak Milik)",
       facilities: JSON.stringify(["Parkir Luas", "Akses Jalan Utama", "Keamanan 24 Jam", "2 Toilet", "Pintu Rolling Door Besi"]),
-      imageUrl: "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/images/ruko/ruko-1-pamulang.jpg",
       status: "AVAILABLE",
     },
     {
@@ -84,7 +84,7 @@ async function main() {
       water: "PDAM Tirta Benteng",
       certType: "HGB Murni",
       facilities: JSON.stringify(["Fasad Kaca Tempered", "Parkir Basement & Outdoor", "CCTV Terintegrasi", "AC Terpasang", "Lift Barang"]),
-      imageUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/images/ruko/ruko-2-bintaro.jpg",
       status: "AVAILABLE",
     },
     {
@@ -102,7 +102,7 @@ async function main() {
       water: "PDAM",
       certType: "HGB",
       facilities: JSON.stringify(["Parkir Khusus", "Keamanan One Gate", "3 Kamar Mandi", "Gudang Belakang"]),
-      imageUrl: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/images/ruko/ruko-3-bsd.jpg",
       status: "AVAILABLE",
     },
     {
@@ -120,7 +120,7 @@ async function main() {
       water: "Air Jetpump + Filter",
       certType: "SHM",
       facilities: JSON.stringify(["Posisi Hook", "Parkir Mobil 4 Unit", "Spanduk Promosi Luas", "Bebas Banjir"]),
-      imageUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/images/ruko/ruko-4-ciputat.jpg",
       status: "RENTED",
     },
     {
@@ -138,7 +138,7 @@ async function main() {
       water: "PDAM Alam Sutera",
       certType: "PPJB Siap AJB",
       facilities: JSON.stringify(["Double Fasad Modern", "Parkir Terkelola", "Hydrant Pemadam", "Keamanan 24 Jam Patroli"]),
-      imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/images/ruko/ruko-5-alamsutera.jpg",
       status: "AVAILABLE",
     },
     {
@@ -156,7 +156,7 @@ async function main() {
       water: "Air Bersih",
       certType: "SHGB",
       facilities: JSON.stringify(["Balkon Lantai 2", "Parkir Roda Dua & Empat", "Taman Asri", "Jaringan Fiber Optic"]),
-      imageUrl: "https://images.unsplash.com/photo-1524813686514-a57563d77d66?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: "/images/ruko/ruko-6-serpong.jpg",
       status: "AVAILABLE",
     },
   ];

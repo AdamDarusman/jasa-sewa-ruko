@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
-  Building2,
   Printer,
   Download,
   CreditCard,
@@ -92,8 +91,8 @@ export default function InvoicePage() {
 
     const doc = new jsPDF();
 
-    // 1. Header & Brand
-    doc.setFillColor(37, 99, 235); // Blue primary
+    // 1. Header & Brand (Forest Green Luxury)
+    doc.setFillColor(30, 77, 52); // Forest Green primary
     doc.rect(0, 0, 210, 30, "F");
 
     doc.setTextColor(255, 255, 255);
@@ -158,7 +157,7 @@ export default function InvoicePage() {
       ],
       foot: [["TOTAL AKHIR PEMBAYARAN", "", "", formatRupiah(booking.totalAmount)]],
       theme: "striped",
-      headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: "bold" },
+      headStyles: { fillColor: [30, 77, 52], textColor: [255, 255, 255], fontStyle: "bold" },
       footStyles: { fillColor: [226, 232, 240], textColor: [15, 23, 42], fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9, cellPadding: 4 },
     });
@@ -295,40 +294,40 @@ export default function InvoicePage() {
       <div className="flex flex-wrap items-center justify-between gap-3 no-print">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 transition"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7A7566] hover:text-[#1A1916] transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Beranda
+          <ArrowLeft className="w-3.5 h-3.5" /> Beranda
         </Link>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-semibold shadow-sm transition"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#E7E5DC] bg-white hover:bg-[#FAF9F5] text-[#1A1916] text-xs font-semibold shadow-sm transition"
           >
-            <Printer className="w-4 h-4" /> Cetak (Print)
+            <Printer className="w-3.5 h-3.5" /> Cetak (Print)
           </button>
 
           <button
             onClick={handleDownloadPdf}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-blue-500/20 transition"
+            className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#1E4D34] hover:bg-[#153826] text-white text-xs font-bold shadow-sm transition"
           >
-            <Download className="w-4 h-4" /> Unduh Invoice PDF
+            <Download className="w-3.5 h-3.5" /> Unduh Invoice PDF
           </button>
         </div>
       </div>
 
       {/* Payment Action Alert (If Pending) */}
       {booking.status === "PENDING" && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 shadow-sm space-y-3 no-print">
+        <div className="bg-[#FAF9F5] border border-[#E7E5DC] rounded-[28px] p-6 shadow-sm space-y-4 no-print">
           <div className="flex items-start gap-3">
-            <Clock className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+            <Clock className="w-5 h-5 text-[#C98A2C] mt-0.5 shrink-0" />
             <div>
-              <h3 className="font-bold text-slate-800 text-sm">
+              <h3 className="font-bold text-[#1A1916] text-sm">
                 Menunggu Pembayaran Sewa
               </h3>
-              <p className="text-xs text-slate-600 mt-0.5">
+              <p className="text-xs text-[#7A7566] mt-0.5">
                 Silakan selesaikan pembayaran sebesar{" "}
-                <strong className="text-slate-900">
+                <strong className="text-[#1E4D34]">
                   {formatRupiah(booking.totalAmount)}
                 </strong>{" "}
                 agar unit ruko ini terkunci untuk usaha Anda.
@@ -339,17 +338,17 @@ export default function InvoicePage() {
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
               onClick={handleMidtransPayment}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition"
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#1E4D34] hover:bg-[#153826] text-white text-xs font-bold shadow-sm transition"
             >
-              <CreditCard className="w-4 h-4" /> Bayar via Midtrans Snap
+              <CreditCard className="w-3.5 h-3.5" /> Bayar via Midtrans Snap
             </button>
 
             <button
               onClick={handleSimulatePayment}
               disabled={simulating}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#1A1916] hover:bg-[#2C2924] text-white text-xs font-bold shadow-sm transition disabled:opacity-50"
             >
-              <Zap className="w-4 h-4" />
+              <Zap className="w-3.5 h-3.5" />
               {simulating ? "Memproses..." : "Simulasi Bayar Lunas (Demo Cepat)"}
             </button>
           </div>
@@ -359,16 +358,15 @@ export default function InvoicePage() {
       {/* Invoice Sheet (Printable Card) */}
       <div
         id="invoice-print-area"
-        className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden p-6 sm:p-10 space-y-8"
+        className="bg-white rounded-[32px] border border-[#E7E5DC] shadow-sm overflow-hidden p-6 sm:p-10 space-y-8"
       >
         {/* Invoice Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between pb-8 border-b border-slate-100 gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between pb-8 border-b border-[#EAE8DF] gap-6">
           <div>
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
-                <Building2 className="w-6 h-6" />
-              </div>
-              <span className="text-2xl font-black text-slate-900">RukoHub</span>
+              <span className="text-2xl font-bold tracking-tight text-[#1A1916]">
+                Ruko<span className="text-[#1E4D34]">Hub</span>
+              </span>
             </div>
             <p className="text-xs text-slate-500 mt-2">
               Platform Jasa Sewa Ruko Digital Terpercaya

@@ -81,22 +81,22 @@ export default function RukoDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="h-96 bg-white rounded-2xl animate-pulse border border-slate-200" />
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16">
+        <div className="h-96 bg-[#FAF9F5] rounded-[32px] animate-pulse border border-[#E7E5DC]" />
       </div>
     );
   }
 
   if (error || !ruko) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center">
-        <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-slate-800">
+      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
+        <AlertCircle className="w-12 h-12 text-rose-500 mx-auto" />
+        <h2 className="text-xl font-bold text-[#1A1916]">
           {error || "Ruko Tidak Ditemukan"}
         </h2>
         <Link
           href="/"
-          className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E4D34] hover:underline"
         >
           <ArrowLeft className="w-4 h-4" /> Kembali ke Katalog
         </Link>
@@ -143,7 +143,6 @@ export default function RukoDetailPage() {
         throw new Error(data.error || "Gagal membuat pesanan sewa");
       }
 
-      // Order created, navigate directly to invoice page
       router.push(`/invoices/${data.booking.orderNumber}`);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -159,20 +158,20 @@ export default function RukoDetailPage() {
   const isAvailable = ruko.status === "AVAILABLE";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6">
       {/* Back button */}
       <Link
         href="/"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-blue-600 transition"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7A7566] hover:text-[#1A1916] transition"
       >
-        <ArrowLeft className="w-4 h-4" /> Kembali ke Semua Ruko
+        <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Katalog Unit
       </Link>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Col: Photo & Details */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* Main Photo */}
-          <div className="relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-md">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Photos & Property Specs */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Main Photo with Rounded Frame */}
+          <div className="relative rounded-[32px] overflow-hidden bg-[#EAE8DF] border border-[#E7E5DC] shadow-sm">
             <img
               src={ruko.imageUrl}
               alt={ruko.title}
@@ -180,108 +179,106 @@ export default function RukoDetailPage() {
             />
             <div className="absolute top-4 left-4">
               <span
-                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-md ${
-                  isAvailable
-                    ? "bg-emerald-600 text-white"
-                    : "bg-amber-600 text-white"
+                className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm ${
+                  isAvailable ? "bg-[#1E4D34] text-white" : "bg-[#4A463B] text-white"
                 }`}
               >
                 {isAvailable ? "Unit Tersedia" : "Sudah Tersewa"}
               </span>
             </div>
-            <div className="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur text-white px-3 py-1 rounded-lg text-xs font-medium">
+            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md text-[#1A1916] px-3.5 py-1.5 rounded-full text-xs font-semibold border border-black/5 shadow-sm">
               Foto Asli Unit Terverifikasi
             </div>
           </div>
 
-          {/* Title & Location Header */}
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          {/* Title & Description Card */}
+          <div className="bg-white p-6 sm:p-10 rounded-[32px] border border-[#E7E5DC] shadow-sm space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#1A1916] tracking-tight">
                 {ruko.title}
               </h1>
-              <div className="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold self-start sm:self-auto">
+              <div className="text-xs px-3 py-1 rounded-full bg-[#E5EFE9] text-[#1E4D34] font-semibold border border-[#D0E3D7] self-start sm:self-auto">
                 {ruko.city}
               </div>
             </div>
 
-            <p className="text-sm text-slate-500 flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-blue-600 shrink-0" />
+            <p className="text-xs sm:text-sm text-[#7A7566] flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#1E4D34] shrink-0" />
               <span>{ruko.address}</span>
             </p>
 
-            <div className="pt-4 border-t border-slate-100">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2">
-                Deskripsi Properti
-              </h2>
-              <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+            <div className="pt-4 border-t border-[#EAE8DF]">
+              <div className="text-xs font-bold text-[#1A1916] uppercase tracking-wider mb-2">
+                Deskripsi Unit Komersial
+              </div>
+              <p className="text-xs sm:text-sm text-[#4A463B] leading-relaxed whitespace-pre-line">
                 {ruko.description}
               </p>
             </div>
           </div>
 
-          {/* Specifications */}
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-              Spesifikasi Utama Unit
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-1">
-                  <Maximize2 className="w-3.5 h-3.5 text-blue-600" />
+          {/* Specifications Grid */}
+          <div className="bg-white p-6 sm:p-10 rounded-[32px] border border-[#E7E5DC] shadow-sm space-y-4">
+            <div className="text-xs font-bold text-[#1A1916] uppercase tracking-wider">
+              Spesifikasi Lengkap
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC]">
+                <div className="text-[10px] text-[#7A7566] flex items-center gap-1 mb-1">
+                  <Maximize2 className="w-3 h-3 text-[#1E4D34]" />
                   Luas Bangunan
                 </div>
-                <div className="font-extrabold text-slate-800 text-base">
+                <div className="font-bold text-[#1A1916] text-sm sm:text-base">
                   {ruko.buildingArea} m²
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-1">
-                  <Maximize2 className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC]">
+                <div className="text-[10px] text-[#7A7566] flex items-center gap-1 mb-1">
+                  <Maximize2 className="w-3 h-3 text-[#1E4D34]" />
                   Luas Tanah
                 </div>
-                <div className="font-extrabold text-slate-800 text-base">
+                <div className="font-bold text-[#1A1916] text-sm sm:text-base">
                   {ruko.landArea} m²
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-1">
-                  <Layers className="w-3.5 h-3.5 text-indigo-600" />
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC]">
+                <div className="text-[10px] text-[#7A7566] flex items-center gap-1 mb-1">
+                  <Layers className="w-3 h-3 text-[#1E4D34]" />
                   Jumlah Lantai
                 </div>
-                <div className="font-extrabold text-slate-800 text-base">
+                <div className="font-bold text-[#1A1916] text-sm sm:text-base">
                   {ruko.floors} Tingkat
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-1">
-                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC]">
+                <div className="text-[10px] text-[#7A7566] flex items-center gap-1 mb-1">
+                  <Zap className="w-3 h-3 text-[#1E4D34]" />
                   Daya Listrik
                 </div>
-                <div className="font-bold text-slate-800 text-sm">
+                <div className="font-bold text-[#1A1916] text-xs sm:text-sm">
                   {ruko.electricity}
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-1">
-                  <Droplet className="w-3.5 h-3.5 text-cyan-600" />
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC]">
+                <div className="text-[10px] text-[#7A7566] flex items-center gap-1 mb-1">
+                  <Droplet className="w-3 h-3 text-[#1E4D34]" />
                   Sumber Air
                 </div>
-                <div className="font-bold text-slate-800 text-sm truncate">
+                <div className="font-bold text-[#1A1916] text-xs sm:text-sm truncate">
                   {ruko.water}
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-1">
-                  <FileCheck2 className="w-3.5 h-3.5 text-rose-500" />
-                  Legalitas
+              <div className="p-4 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC]">
+                <div className="text-[10px] text-[#7A7566] flex items-center gap-1 mb-1">
+                  <FileCheck2 className="w-3 h-3 text-[#1E4D34]" />
+                  Legalitas Surat
                 </div>
-                <div className="font-bold text-slate-800 text-sm truncate">
+                <div className="font-bold text-[#1A1916] text-xs sm:text-sm truncate">
                   {ruko.certType}
                 </div>
               </div>
@@ -289,17 +286,17 @@ export default function RukoDetailPage() {
           </div>
 
           {/* Facilities */}
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-              Fasilitas Pendukung
-            </h2>
+          <div className="bg-white p-6 sm:p-10 rounded-[32px] border border-[#E7E5DC] shadow-sm space-y-4">
+            <div className="text-xs font-bold text-[#1A1916] uppercase tracking-wider">
+              Fasilitas Unit
+            </div>
             <div className="flex flex-wrap gap-2 pt-1">
               {facilitiesList.map((fac, idx) => (
                 <div
                   key={idx}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF9F5] border border-[#E7E5DC] text-[#4A463B] text-xs font-medium"
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1E4D34]" />
                   {fac}
                 </div>
               ))}
@@ -307,26 +304,26 @@ export default function RukoDetailPage() {
           </div>
         </div>
 
-        {/* Right Col: Booking Checkout Box */}
-        <div className="lg:col-span-4">
-          <div className="sticky top-24 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xl space-y-6">
+        {/* Right Column: Checkout Card (Matching Image 2 Style) */}
+        <div className="lg:col-span-4 sticky top-6">
+          <div className="bg-white p-6 sm:p-8 rounded-[32px] border border-[#E7E5DC] shadow-sm space-y-6">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#7A7566]">
                 Tarif Sewa
               </div>
-              <div className="text-2xl font-black text-blue-600 mt-1">
+              <div className="text-2xl font-black text-[#1E4D34] mt-1">
                 {formatRupiah(ruko.pricePerYear)}
-                <span className="text-xs font-normal text-slate-500"> /tahun</span>
+                <span className="text-xs font-normal text-[#7A7566]"> /tahun</span>
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-[#7A7566]">
                 atau {formatRupiah(ruko.pricePerMonth)} /bulan
               </div>
             </div>
 
-            <hr className="border-slate-100" />
+            <hr className="border-[#EAE8DF]" />
 
             {bookingError && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{bookingError}</span>
               </div>
@@ -335,13 +332,13 @@ export default function RukoDetailPage() {
             {isAvailable ? (
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#1A1916] mb-1.5">
                     Durasi Sewa
                   </label>
                   <select
                     value={durationMonths}
                     onChange={(e) => setDurationMonths(parseInt(e.target.value))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                    className="w-full px-3.5 py-2.5 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-[#1E4D34] focus:outline-none"
                   >
                     <option value={6}>6 Bulan (Setengah Tahun)</option>
                     <option value={12}>12 Bulan (1 Tahun - Hemat)</option>
@@ -350,78 +347,78 @@ export default function RukoDetailPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#1A1916] mb-1.5">
                     Tanggal Mulai Sewa
                   </label>
                   <div className="relative">
-                    <Calendar className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <Calendar className="w-4 h-4 text-[#8C877A] absolute left-3.5 top-3" />
                     <input
                       type="date"
                       required
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                      className="w-full pl-10 pr-3 py-2 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs sm:text-sm focus:ring-2 focus:ring-[#1E4D34] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#1A1916] mb-1.5">
                     Catatan Penggunaan (Opsional)
                   </label>
                   <textarea
                     rows={2}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Contoh: Untuk usaha cafe / kantor konsultan"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                    placeholder="Contoh: Rencana sewa untuk outlet kopi / kantor cabang..."
+                    className="w-full px-3.5 py-2 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs focus:ring-2 focus:ring-[#1E4D34] focus:outline-none"
                   />
                 </div>
 
                 {/* Calculation Summary */}
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="flex justify-between text-slate-500">
+                <div className="bg-[#FAF9F5] p-4 rounded-2xl border border-[#E7E5DC] space-y-2 text-xs">
+                  <div className="flex justify-between text-[#7A7566]">
                     <span>Durasi:</span>
-                    <span className="font-semibold text-slate-700">
+                    <span className="font-semibold text-[#1A1916]">
                       {durationMonths} Bulan
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-500">
+                  <div className="flex justify-between text-[#7A7566]">
                     <span>Biaya Administrasi:</span>
-                    <span className="text-emerald-600 font-bold">GRATIS</span>
+                    <span className="text-[#1E4D34] font-bold">GRATIS</span>
                   </div>
-                  <div className="pt-2 border-t border-slate-200 flex justify-between text-sm font-extrabold text-slate-900">
-                    <span>Total Pembayaran:</span>
-                    <span className="text-blue-600">{formatRupiah(totalPrice)}</span>
+                  <div className="pt-2 border-t border-[#EAE8DF] flex justify-between text-sm font-black text-[#1A1916]">
+                    <span>Total Tagihan:</span>
+                    <span className="text-[#1E4D34]">{formatRupiah(totalPrice)}</span>
                   </div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={bookingLoading}
-                  className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 text-sm flex items-center justify-center gap-2 transition disabled:opacity-50"
+                  className="w-full py-3.5 px-4 bg-[#1E4D34] hover:bg-[#153826] text-white font-bold rounded-full shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2 transition disabled:opacity-50"
                 >
                   <CreditCard className="w-4 h-4" />
-                  {bookingLoading ? "Membuat Pesanan..." : "Lanjutkan & Bayar Sewa"}
+                  {bookingLoading ? "Memproses..." : "Lanjutkan & Bayar Sewa"}
                 </button>
 
-                <div className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1 pt-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                  Transaksi dijamin aman dengan Payment Gateway & Invoice PDF
+                <div className="text-[10px] text-[#7A7566] text-center flex items-center justify-center gap-1 pt-1">
+                  <ShieldCheck className="w-3 h-3 text-[#1E4D34]" />
+                  Aman via Midtrans & Invoice PDF Otomatis
                 </div>
               </form>
             ) : (
               <div className="text-center py-6 space-y-3">
-                <Clock className="w-10 h-10 text-amber-500 mx-auto" />
-                <h3 className="font-bold text-slate-800 text-sm">
+                <Clock className="w-8 h-8 text-[#A8A394] mx-auto" />
+                <div className="font-bold text-[#1A1916] text-xs sm:text-sm">
                   Unit Ini Sedang Tersewa
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Unit ruko ini saat ini sedang memiliki penyewa aktif. Silakan pilih unit ruko lain yang masih tersedia di katalog.
+                </div>
+                <p className="text-xs text-[#7A7566]">
+                  Unit ini saat ini memiliki penyewa aktif.
                 </p>
                 <Link
                   href="/"
-                  className="inline-block px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-semibold hover:bg-blue-100"
+                  className="inline-block px-4 py-2 bg-[#FAF9F5] border border-[#E7E5DC] text-[#1A1916] rounded-full text-xs font-semibold hover:bg-white"
                 >
                   Lihat Ruko Lain
                 </Link>

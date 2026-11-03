@@ -47,7 +47,7 @@ export default function AdminRukoPage() {
   const [water, setWater] = useState("PDAM");
   const [certType, setCertType] = useState("SHM");
   const [facilities, setFacilities] = useState("Parkir Luas, Keamanan 24 Jam, Akses Jalan Utama");
-  const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1200&q=80");
+  const [imageUrl, setImageUrl] = useState("/images/ruko/ruko-1-pamulang.jpg");
 
   const fetchRukos = async () => {
     setLoading(true);

@@ -4,14 +4,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Building2,
-  FileSpreadsheet,
-  Receipt,
+  Phone,
+  ArrowRight,
   LogOut,
-  LogIn,
   Menu,
   X,
+  FileSpreadsheet,
   PlusCircle,
+  Receipt,
   Home,
 } from "lucide-react";
 
@@ -24,26 +24,22 @@ interface UserData {
 
 export default function Navbar() {
   const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
-  const fetchUser = async () => {
-    try {
-      const res = await fetch("/api/auth/me");
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
     fetchUser();
   }, [pathname]);
 
@@ -59,156 +55,134 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo Brand */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:bg-blue-700 transition">
-              <Building2 className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
-                RukoHub
-              </span>
-              <span className="hidden sm:inline-block ml-1 text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">
-                Sewa Ruko
-              </span>
-            </div>
+    <header className="w-full pt-4 sm:pt-6 px-4 sm:px-6 lg:px-10 max-w-[1400px] mx-auto">
+      <div className="flex items-center justify-between py-3 px-6 bg-white/70 backdrop-blur-md rounded-full border border-[#E7E5DC] shadow-sm">
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <span className="text-xl font-bold tracking-tight text-[#1A1916]">
+            Ruko<span className="text-[#1E4D34]">Hub</span>
+          </span>
+          <span className="text-[10px] font-semibold text-[#1E4D34] bg-[#E5EFE9] px-2 py-0.5 rounded-full border border-[#D0E3D7]">
+            Komersial
+          </span>
+        </Link>
+
+        {/* Center / Navigation Links */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[#5A564C]">
+          <Link
+            href="/"
+            className={`transition-colors hover:text-[#1A1916] ${
+              pathname === "/" ? "text-[#1E4D34] font-bold" : ""
+            }`}
+          >
+            Katalog Unit
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1">
+          {user && (
             <Link
-              href="/"
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                pathname === "/"
-                  ? "text-blue-600 bg-blue-50"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              href="/my-bookings"
+              className={`transition-colors hover:text-[#1A1916] ${
+                pathname === "/my-bookings" ? "text-[#1E4D34] font-bold" : ""
               }`}
             >
-              <Home className="w-4 h-4" />
-              Katalog Ruko
+              Sewa Saya
             </Link>
+          )}
 
-            {user && (
+          {user?.role === "ADMIN" && (
+            <>
               <Link
-                href="/my-bookings"
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                  pathname === "/my-bookings"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                href="/admin/laporan"
+                className={`transition-colors hover:text-[#1A1916] ${
+                  pathname === "/admin/laporan" ? "text-[#1E4D34] font-bold" : ""
                 }`}
               >
-                <Receipt className="w-4 h-4" />
-                Sewa Saya
+                Laporan Keuangan
               </Link>
-            )}
+              <Link
+                href="/admin/ruko"
+                className={`transition-colors hover:text-[#1A1916] ${
+                  pathname === "/admin/ruko" ? "text-[#1E4D34] font-bold" : ""
+                }`}
+              >
+                Kelola Unit
+              </Link>
+            </>
+          )}
+        </nav>
 
-            {/* Admin Exclusive Menus */}
-            {user?.role === "ADMIN" && (
-              <>
-                <Link
-                  href="/admin/laporan"
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                    pathname === "/admin/laporan"
-                      ? "text-blue-600 bg-blue-50 font-semibold"
-                      : "text-slate-700 hover:text-blue-600 hover:bg-slate-100"
-                  }`}
-                >
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                  Laporan Keuangan
-                </Link>
-                <Link
-                  href="/admin/ruko"
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
-                    pathname === "/admin/ruko"
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-                >
-                  <PlusCircle className="w-4 h-4 text-indigo-600" />
-                  Kelola Ruko
-                </Link>
-              </>
-            )}
-          </nav>
+        {/* Right Info: Phone & Menu / User Pill */}
+        <div className="flex items-center gap-3">
+          <a
+            href="https://wa.me/6281234567890"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden lg:flex items-center gap-2 text-xs font-semibold text-[#4A463B] hover:text-[#1A1916] transition-colors pr-2"
+          >
+            <div className="w-6 h-6 rounded-full bg-[#EAE8DF] flex items-center justify-center text-[#1A1916]">
+              <Phone className="w-3 h-3" />
+            </div>
+            <span>0812-3456-7890</span>
+          </a>
 
-          {/* Right Action / Auth */}
-          <div className="hidden md:flex items-center gap-3">
-            {loading ? (
-              <div className="w-24 h-8 bg-slate-100 animate-pulse rounded-lg" />
-            ) : user ? (
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <div className="text-xs font-semibold text-slate-800 flex items-center justify-end gap-1">
-                    {user.name}
-                    {user.role === "ADMIN" && (
-                      <span className="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.2 rounded font-bold">
-                        ADMIN
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[11px] text-slate-500">{user.email}</div>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 text-xs font-medium transition"
-                  title="Keluar"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  Keluar
-                </button>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <div className="hidden sm:flex flex-col text-right">
+                <span className="text-xs font-bold text-[#1A1916] leading-none">
+                  {user.name.split(" ")[0]}
+                </span>
+                <span className="text-[10px] text-[#7A7566] leading-none mt-0.5">
+                  {user.role === "ADMIN" ? "Admin" : "Penyewa"}
+                </span>
               </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/login"
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Masuk
-                </Link>
-                <Link
-                  href="/register"
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition"
-                >
-                  Daftar
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              <button
+                onClick={handleLogout}
+                className="w-8 h-8 rounded-full bg-[#EAE8DF] hover:bg-rose-100 text-[#4A463B] hover:text-rose-600 flex items-center justify-center transition-colors"
+                title="Keluar"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-2 pl-4 pr-3 py-2 rounded-full bg-[#1A1916] hover:bg-[#2C2924] text-white text-xs font-semibold shadow-sm transition-all hover:scale-105"
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+              <span>Masuk</span>
+              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
+          )}
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden w-8 h-8 rounded-full bg-[#EAE8DF] flex items-center justify-center text-[#1A1916]"
+          >
+            {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu dropdown */}
+      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-6 space-y-2">
+        <div className="md:hidden mt-2 p-5 bg-white rounded-3xl border border-[#E7E5DC] shadow-lg space-y-3">
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 font-medium"
+            className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
           >
-            <Home className="w-4 h-4 text-blue-600" />
-            Katalog Ruko
+            <Home className="w-4 h-4 text-[#1E4D34]" />
+            Katalog Unit
           </Link>
           {user && (
             <Link
               href="/my-bookings"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 font-medium"
+              className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
             >
-              <Receipt className="w-4 h-4 text-blue-600" />
+              <Receipt className="w-4 h-4 text-[#1E4D34]" />
               Sewa Saya
             </Link>
           )}
@@ -217,55 +191,40 @@ export default function Navbar() {
               <Link
                 href="/admin/laporan"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 font-medium"
+                className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
               >
-                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                <FileSpreadsheet className="w-4 h-4 text-[#1E4D34]" />
                 Laporan Keuangan
               </Link>
               <Link
                 href="/admin/ruko"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 font-medium"
+                className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
               >
-                <PlusCircle className="w-4 h-4 text-indigo-600" />
-                Kelola Ruko
+                <PlusCircle className="w-4 h-4 text-[#1E4D34]" />
+                Kelola Unit
               </Link>
             </>
           )}
-
-          <div className="pt-4 border-t border-slate-100">
+          <div className="pt-3 border-t border-[#EAE8DF]">
             {user ? (
-              <div className="space-y-2">
-                <div className="px-3 py-1 text-xs text-slate-500">
-                  Masuk sebagai: <strong>{user.name}</strong> ({user.role})
-                </div>
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-50 text-red-600 font-medium text-sm"
-                >
-                  <LogOut className="w-4 h-4" /> Keluar
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-rose-50 text-rose-700 text-xs font-bold"
+              >
+                <LogOut className="w-4 h-4" /> Keluar
+              </button>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-center px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium"
-                >
-                  Masuk
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold"
-                >
-                  Daftar
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                onClick={() => setMenuOpen(false)}
+                className="w-full flex items-center justify-center py-2.5 rounded-xl bg-[#1A1916] text-white text-xs font-bold"
+              >
+                Masuk ke Akun
+              </Link>
             )}
           </div>
         </div>
