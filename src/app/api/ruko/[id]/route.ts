@@ -13,6 +13,16 @@ export async function GET(
       where: {
         OR: [{ id }, { slug: id }],
       },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
     });
 
     if (!ruko) {
@@ -38,14 +48,26 @@ export async function PUT(
 ) {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "ADMIN") {
+    if (!user || (user.role !== "ADMIN" && user.role !== "VENDOR")) {
       return NextResponse.json(
-        { error: "Akses ditolak. Hanya Admin yang dapat mengubah data ruko." },
+        { error: "Akses ditolak. Hanya Admin atau Penyedia Ruko yang dapat mengubah data ruko." },
         { status: 403 }
       );
     }
 
     const { id } = params;
+    const existingRuko = await prisma.ruko.findUnique({ where: { id } });
+    if (!existingRuko) {
+      return NextResponse.json({ error: "Ruko tidak ditemukan" }, { status: 404 });
+    }
+
+    if (user.role === "VENDOR" && existingRuko.ownerId && existingRuko.ownerId !== user.id) {
+      return NextResponse.json(
+        { error: "Akses ditolak. Anda hanya dapat mengubah ruko milik Anda sendiri." },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
 
     const updated = await prisma.ruko.update({
@@ -87,7 +109,7 @@ export async function DELETE(
 ) {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "ADMIN") {
+    if (!user || (user.role !== "ADMIN" && user.role !== "VENDOR")) {
       return NextResponse.json(
         { error: "Akses ditolak" },
         { status: 403 }
@@ -95,6 +117,18 @@ export async function DELETE(
     }
 
     const { id } = params;
+    const existingRuko = await prisma.ruko.findUnique({ where: { id } });
+    if (!existingRuko) {
+      return NextResponse.json({ error: "Ruko tidak ditemukan" }, { status: 404 });
+    }
+
+    if (user.role === "VENDOR" && existingRuko.ownerId && existingRuko.ownerId !== user.id) {
+      return NextResponse.json(
+        { error: "Akses ditolak. Anda hanya dapat menghapus ruko milik Anda sendiri." },
+        { status: 403 }
+      );
+    }
+
     await prisma.ruko.delete({ where: { id } });
 
     return NextResponse.json({ success: true, message: "Ruko berhasil dihapus" });

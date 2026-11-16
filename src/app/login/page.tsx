@@ -31,6 +31,8 @@ export default function LoginPage() {
 
       if (data.user.role === "ADMIN") {
         router.push("/admin/laporan");
+      } else if (data.user.role === "VENDOR") {
+        router.push("/vendor/dashboard");
       } else {
         router.push("/");
       }
@@ -73,22 +75,30 @@ export default function LoginPage() {
             <ShieldCheck className="w-3.5 h-3.5 text-[#1E4D34]" />
             Tombol Uji Coba Cepat (Autofill):
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
               onClick={() => fillCredentials("admin@ruko.id", "admin123")}
               className="p-2 rounded-xl bg-white hover:bg-[#EFECE5] text-[#1A1916] border border-[#E7E5DC] font-medium transition text-left"
             >
-              <div className="font-bold text-xs">Akun Admin</div>
-              <div className="text-[10px] text-[#7A7566]">admin@ruko.id</div>
+              <div className="font-bold text-xs">Admin</div>
+              <div className="text-[10px] text-[#7A7566] truncate">admin@ruko.id</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => fillCredentials("mitra@ruko.id", "vendor123")}
+              className="p-2 rounded-xl bg-[#E5EFE9]/60 hover:bg-[#E5EFE9] text-[#1A1916] border border-[#1E4D34]/30 font-medium transition text-left"
+            >
+              <div className="font-bold text-xs text-[#1E4D34]">Penyedia Ruko</div>
+              <div className="text-[10px] text-[#7A7566] truncate">mitra@ruko.id</div>
             </button>
             <button
               type="button"
               onClick={() => fillCredentials("budi@gmail.com", "user123")}
               className="p-2 rounded-xl bg-white hover:bg-[#EFECE5] text-[#1A1916] border border-[#E7E5DC] font-medium transition text-left"
             >
-              <div className="font-bold text-xs">Akun Penyewa</div>
-              <div className="text-[10px] text-[#7A7566]">budi@gmail.com</div>
+              <div className="font-bold text-xs">Pembeli Ruko</div>
+              <div className="text-[10px] text-[#7A7566] truncate">budi@gmail.com</div>
             </button>
           </div>
         </div>

@@ -38,6 +38,12 @@ interface RukoDetail {
   facilities: string;
   imageUrl: string;
   status: string;
+  owner?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string | null;
+  } | null;
 }
 
 export default function RukoDetailPage() {
@@ -206,6 +212,16 @@ export default function RukoDetailPage() {
               <MapPin className="w-3.5 h-3.5 text-[#1E4D34] shrink-0" />
               <span>{ruko.address}</span>
             </p>
+
+            {ruko.owner && (
+              <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#FAF9F5] border border-[#E7E5DC] text-xs text-[#4A463B]">
+                <ShieldCheck className="w-4 h-4 text-[#1E4D34]" />
+                <span>
+                  Disediakan oleh Mitra Terverifikasi:{" "}
+                  <strong className="text-[#1A1916]">{ruko.owner.name}</strong>
+                </span>
+              </div>
+            )}
 
             <div className="pt-4 border-t border-[#EAE8DF]">
               <div className="text-xs font-bold text-[#1A1916] uppercase tracking-wider mb-2">

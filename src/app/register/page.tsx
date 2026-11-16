@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Building2, UserPlus, Lock, Mail, User, Phone, AlertCircle } from "lucide-react";
+import { Building2, UserPlus, Lock, Mail, User, Phone, AlertCircle, Store } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"USER" | "VENDOR">("USER");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -23,7 +24,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, password }),
+        body: JSON.stringify({ name, email, phone, password, role }),
       });
 
       const data = await res.json();
@@ -31,7 +32,11 @@ export default function RegisterPage() {
         throw new Error(data.error || "Gagal mendaftar");
       }
 
-      router.push("/");
+      if (role === "VENDOR") {
+        router.push("/vendor/dashboard");
+      } else {
+        router.push("/");
+      }
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -45,91 +50,135 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
-        <div className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-            <Building2 className="w-7 h-7" />
-          </div>
-          <h2 className="mt-4 text-2xl font-extrabold text-slate-900 tracking-tight">
-            Daftar Akun Penyewa
+    <div className="min-h-[80vh] flex items-center justify-center py-10 px-4">
+      <div className="max-w-md w-full bg-white p-8 sm:p-10 rounded-[36px] shadow-sm border border-[#E7E5DC] space-y-6">
+        <div className="text-center space-y-2">
+          <Link href="/" className="inline-block text-2xl font-bold tracking-tight text-[#1A1916]">
+            Ruko<span className="text-[#1E4D34]">Hub</span>
+          </Link>
+          <h2 className="text-xl font-normal text-[#1A1916]">
+            Buat Akun <span className="font-serif italic text-[#1E4D34]">Baru</span>
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Mulai sewa ruko idaman untuk ekspansi usahamu
+          <p className="text-xs text-[#7A7566]">
+            Pilih peran akun sesuai kebutuhan komersial Anda
           </p>
         </div>
 
+        {/* Role Selector */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#1A1916]">
+            Daftar Sebagai:
+          </label>
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onClick={() => setRole("USER")}
+              className={`p-3 rounded-2xl border text-left transition flex flex-col gap-1 ${
+                role === "USER"
+                  ? "bg-[#E5EFE9] border-[#1E4D34] text-[#1A1916] ring-1 ring-[#1E4D34]"
+                  : "bg-[#FAF9F5] border-[#E7E5DC] text-[#5A564C] hover:bg-[#EFECE5]"
+              }`}
+            >
+              <div className="flex items-center gap-1.5 font-bold text-xs">
+                <Store className={`w-4 h-4 ${role === "USER" ? "text-[#1E4D34]" : "text-[#7A7566]"}`} />
+                Pembeli / Penyewa
+              </div>
+              <span className="text-[10px] text-[#7A7566] leading-tight">
+                Cari & sewa unit ruko untuk tempat usaha Anda
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setRole("VENDOR")}
+              className={`p-3 rounded-2xl border text-left transition flex flex-col gap-1 ${
+                role === "VENDOR"
+                  ? "bg-[#E5EFE9] border-[#1E4D34] text-[#1A1916] ring-1 ring-[#1E4D34]"
+                  : "bg-[#FAF9F5] border-[#E7E5DC] text-[#5A564C] hover:bg-[#EFECE5]"
+              }`}
+            >
+              <div className="flex items-center gap-1.5 font-bold text-xs">
+                <Building2 className={`w-4 h-4 ${role === "VENDOR" ? "text-[#1E4D34]" : "text-[#7A7566]"}`} />
+                Penyedia Ruko
+              </div>
+              <span className="text-[10px] text-[#7A7566] leading-tight">
+                Pasarkan unit ruko milik Anda & pantau pendapatan
+              </span>
+            </button>
+          </div>
+        </div>
+
         {error && (
-          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-xs">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form className="mt-6 space-y-4" onSubmit={handleRegister}>
+        <form className="space-y-4" onSubmit={handleRegister}>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Nama Lengkap / Perusahaan
+            <label className="block text-xs font-bold text-[#1A1916] mb-1">
+              {role === "VENDOR" ? "Nama Pemilik / Perusahaan Properti" : "Nama Lengkap / Perusahaan"}
             </label>
             <div className="relative">
-              <User className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+              <User className="w-4 h-4 text-[#8C877A] absolute left-3.5 top-3.5" />
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Contoh: Budi Santoso"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"
+                placeholder={role === "VENDOR" ? "Contoh: PT Mitra Ruko Propertindo" : "Contoh: Budi Santoso"}
+                className="w-full pl-10 pr-4 py-3 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs sm:text-sm text-[#1A1916] focus:outline-none focus:ring-2 focus:ring-[#1E4D34]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1A1916] mb-1">
               Alamat Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+              <Mail className="w-4 h-4 text-[#8C877A] absolute left-3.5 top-3.5" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="nama@email.com"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"
+                className="w-full pl-10 pr-4 py-3 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs sm:text-sm text-[#1A1916] focus:outline-none focus:ring-2 focus:ring-[#1E4D34]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1A1916] mb-1">
               Nomor WhatsApp / HP
             </label>
             <div className="relative">
-              <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+              <Phone className="w-4 h-4 text-[#8C877A] absolute left-3.5 top-3.5" />
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="081234567890"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"
+                className="w-full pl-10 pr-4 py-3 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs sm:text-sm text-[#1A1916] focus:outline-none focus:ring-2 focus:ring-[#1E4D34]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1A1916] mb-1">
               Kata Sandi (Minimal 6 Karakter)
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+              <Lock className="w-4 h-4 text-[#8C877A] absolute left-3.5 top-3.5" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"
+                className="w-full pl-10 pr-4 py-3 bg-[#FAF9F5] border border-[#E7E5DC] rounded-2xl text-xs sm:text-sm text-[#1A1916] focus:outline-none focus:ring-2 focus:ring-[#1E4D34]"
               />
             </div>
           </div>
@@ -137,19 +186,20 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:opacity-50"
+            className="w-full py-3.5 px-4 rounded-full text-xs sm:text-sm font-bold text-white bg-[#1A1916] hover:bg-[#2C2924] shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <UserPlus className="w-4 h-4" />
-            {loading ? "Mendaftarkan..." : "Daftar Sekarang"}
+            {loading
+              ? "Mendaftarkan..."
+              : role === "VENDOR"
+              ? "Daftar Sebagai Penyedia Ruko"
+              : "Daftar Sebagai Penyewa"}
           </button>
         </form>
 
-        <div className="text-center text-sm text-slate-600 pt-2 border-t border-slate-100">
+        <div className="text-center text-xs text-[#7A7566] pt-2 border-t border-[#EAE8DF]">
           Sudah punya akun?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-blue-600 hover:text-blue-500 underline"
-          >
+          <Link href="/login" className="font-bold text-[#1E4D34] hover:underline">
             Masuk di sini
           </Link>
         </div>

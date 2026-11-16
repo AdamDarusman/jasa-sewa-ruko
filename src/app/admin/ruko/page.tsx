@@ -449,7 +449,7 @@ export default function AdminRukoPage() {
                   URL Foto Ruko
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   required
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}

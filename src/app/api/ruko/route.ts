@@ -10,9 +10,20 @@ export async function GET(request: Request) {
     const status = searchParams.get("status") || "";
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
+    const ownerId = searchParams.get("ownerId");
+    const mine = searchParams.get("mine");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
+
+    if (mine === "true") {
+      const currentUser = await getCurrentUser();
+      if (currentUser && currentUser.role === "VENDOR") {
+        where.ownerId = currentUser.id;
+      }
+    } else if (ownerId) {
+      where.ownerId = ownerId;
+    }
 
     if (search) {
       where.OR = [
@@ -38,6 +49,16 @@ export async function GET(request: Request) {
 
     const rukos = await prisma.ruko.findMany({
       where,
+      include: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 
@@ -57,9 +78,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "ADMIN") {
+    if (!user || (user.role !== "ADMIN" && user.role !== "VENDOR")) {
       return NextResponse.json(
-        { error: "Akses ditolak. Hanya Admin yang dapat menambah ruko." },
+        { error: "Akses ditolak. Hanya Admin atau Penyedia Ruko yang dapat menambah ruko." },
         { status: 403 }
       );
     }
@@ -117,6 +138,7 @@ export async function POST(request: Request) {
           : facilities || "[]",
         imageUrl,
         status: "AVAILABLE",
+        ownerId: user.id,
       },
     });
 

@@ -14,9 +14,10 @@ async function main() {
 
   // 2. Hash passwords
   const adminPassword = await bcrypt.hash("admin123", 10);
+  const vendorPassword = await bcrypt.hash("vendor123", 10);
   const userPassword = await bcrypt.hash("user123", 10);
 
-  // 3. Create Users
+  // 3. Create Users (ADMIN, VENDOR / Penyedia Ruko, USER / Penyewa Ruko)
   const admin = await prisma.user.create({
     data: {
       name: "Administrator RukoHub",
@@ -24,6 +25,26 @@ async function main() {
       password: adminPassword,
       phone: "081234567890",
       role: "ADMIN",
+    },
+  });
+
+  const vendor1 = await prisma.user.create({
+    data: {
+      name: "PT Graha Properti (Penyedia Ruko)",
+      email: "mitra@ruko.id",
+      password: vendorPassword,
+      phone: "081188997766",
+      role: "VENDOR",
+    },
+  });
+
+  const vendor2 = await prisma.user.create({
+    data: {
+      name: "Hendra Wijaya (Pemilik Ruko)",
+      email: "hendra@ruko.id",
+      password: vendorPassword,
+      phone: "081566778899",
+      role: "VENDOR",
     },
   });
 
@@ -47,7 +68,14 @@ async function main() {
     },
   });
 
-  console.log("Created users:", admin.email, tenant1.email, tenant2.email);
+  console.log(
+    "Created users:",
+    admin.email,
+    vendor1.email,
+    vendor2.email,
+    tenant1.email,
+    tenant2.email
+  );
 
   // 4. Create Rukos (All Real Commercial Shop-Houses / Ruko)
   const rukosData = [
@@ -162,8 +190,15 @@ async function main() {
   ];
 
   const createdRukos = [];
-  for (const r of rukosData) {
-    const created = await prisma.ruko.create({ data: r });
+  for (let i = 0; i < rukosData.length; i++) {
+    const r = rukosData[i];
+    const ownerId = i < 4 ? vendor1.id : vendor2.id;
+    const created = await prisma.ruko.create({
+      data: {
+        ...r,
+        ownerId,
+      },
+    });
     createdRukos.push(created);
   }
 

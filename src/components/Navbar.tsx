@@ -13,6 +13,7 @@ import {
   PlusCircle,
   Receipt,
   Home,
+  Building2,
 } from "lucide-react";
 
 interface UserData {
@@ -35,6 +36,11 @@ export default function Navbar() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          if (data.user?.role === "VENDOR" && (pathname === "/" || pathname === "/my-bookings")) {
+            router.replace("/vendor/dashboard");
+          }
+        } else {
+          setUser(null);
         }
       } catch (err) {
         console.error(err);
@@ -58,7 +64,16 @@ export default function Navbar() {
     <header className="w-full pt-4 sm:pt-6 px-4 sm:px-6 lg:px-10 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between py-3 px-6 bg-white/70 backdrop-blur-md rounded-full border border-[#E7E5DC] shadow-sm">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link
+          href={
+            user?.role === "VENDOR"
+              ? "/vendor/dashboard"
+              : user?.role === "ADMIN"
+              ? "/admin/laporan"
+              : "/"
+          }
+          className="flex items-center gap-2 group"
+        >
           <span className="text-xl font-bold tracking-tight text-[#1A1916]">
             Ruko<span className="text-[#1E4D34]">Hub</span>
           </span>
@@ -69,20 +84,33 @@ export default function Navbar() {
 
         {/* Center / Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[#5A564C]">
-          <Link
-            href="/"
-            className={`transition-colors hover:text-[#1A1916] ${
-              pathname === "/" ? "text-[#1E4D34] font-bold" : ""
-            }`}
-          >
-            Katalog Unit
-          </Link>
+          {(!user || user.role === "USER") && (
+            <Link
+              href="/"
+              className={`transition-colors hover:text-[#1A1916] ${
+                pathname === "/" ? "text-[#1E4D34] font-bold" : ""
+              }`}
+            >
+              Katalog Unit
+            </Link>
+          )}
 
-          {user && (
+          {user?.role === "USER" && (
             <Link
               href="/my-bookings"
               className={`transition-colors hover:text-[#1A1916] ${
                 pathname === "/my-bookings" ? "text-[#1E4D34] font-bold" : ""
+              }`}
+            >
+              Sewa Saya
+            </Link>
+          )}
+
+          {user?.role === "VENDOR" && (
+            <Link
+              href="/vendor/dashboard"
+              className={`transition-colors hover:text-[#1A1916] ${
+                pathname === "/vendor/dashboard" ? "text-[#1E4D34] font-bold" : ""
               }`}
             >
               Sewa Saya
@@ -132,7 +160,11 @@ export default function Navbar() {
                   {user.name.split(" ")[0]}
                 </span>
                 <span className="text-[10px] text-[#7A7566] leading-none mt-0.5">
-                  {user.role === "ADMIN" ? "Admin" : "Penyewa"}
+                  {user.role === "ADMIN"
+                    ? "Admin"
+                    : user.role === "VENDOR"
+                    ? "Penyedia Ruko"
+                    : "Pembeli / Penyewa"}
                 </span>
               </div>
               <button
@@ -168,21 +200,33 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden mt-2 p-5 bg-white rounded-3xl border border-[#E7E5DC] shadow-lg space-y-3">
-          <Link
-            href="/"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
-          >
-            <Home className="w-4 h-4 text-[#1E4D34]" />
-            Katalog Unit
-          </Link>
-          {user && (
+          {(!user || user.role === "USER") && (
+            <Link
+              href="/"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
+            >
+              <Home className="w-4 h-4 text-[#1E4D34]" />
+              Katalog Unit
+            </Link>
+          )}
+          {user?.role === "USER" && (
             <Link
               href="/my-bookings"
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
             >
               <Receipt className="w-4 h-4 text-[#1E4D34]" />
+              Sewa Saya
+            </Link>
+          )}
+          {user?.role === "VENDOR" && (
+            <Link
+              href="/vendor/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 text-sm font-semibold text-[#1A1916] p-2 hover:bg-[#F4F3EE] rounded-xl"
+            >
+              <Building2 className="w-4 h-4 text-[#1E4D34]" />
               Sewa Saya
             </Link>
           )}

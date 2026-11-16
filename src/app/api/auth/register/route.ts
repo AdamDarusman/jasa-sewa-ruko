@@ -5,7 +5,7 @@ import { signJwt } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password, phone } = await request.json();
+    const { name, email, password, phone, role } = await request.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const validRole = role === "VENDOR" ? "VENDOR" : "USER";
 
     const newUser = await prisma.user.create({
       data: {
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
         email: cleanEmail,
         password: hashedPassword,
         phone: phone?.trim() || null,
-        role: "USER",
+        role: validRole,
       },
     });
 

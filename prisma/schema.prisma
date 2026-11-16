@@ -13,10 +13,11 @@ model User {
   email     String    @unique
   password  String
   phone     String?
-  role      String    @default("USER") // "ADMIN" or "USER"
+  role      String    @default("USER") // "ADMIN", "VENDOR", or "USER"
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   bookings  Booking[]
+  rukos     Ruko[]    @relation("VendorRukos")
 }
 
 model Ruko {
@@ -38,6 +39,8 @@ model Ruko {
   imageUrl      String    // Primary image
   images        String?   // JSON array string optional
   status        String    @default("AVAILABLE") // "AVAILABLE", "RENTED", "MAINTENANCE"
+  ownerId       String?
+  owner         User?     @relation("VendorRukos", fields: [ownerId], references: [id], onDelete: SetNull)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   bookings      Booking[]
