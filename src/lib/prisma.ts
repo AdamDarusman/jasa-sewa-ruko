@@ -5,13 +5,13 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const vercelPostgresUrl =
-  process.env.STORAGE_SEWA_RUKO_DATABASE_URL_POOLED ||
-  process.env.STORAGE_SEWA_RUKO_DATABASE_URL ||
   process.env.STORAGE_SEWA_RUKO_POSTGRES_URL ||
+  process.env.STORAGE_SEWA_RUKO_DATABASE_URL ||
   process.env.STORAGE_SEWA_RUKO_PRISMA_DATABASE_URL ||
+  process.env.STORAGE_SEWA_RUKO_DATABASE_URL_POOLED ||
   process.env.STORAGE_SEWA_RUKO_POSTGRES_PRISMA_URL ||
-  process.env.POSTGRES_URL_POOLED ||
-  process.env.POSTGRES_URL;
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRES_URL_POOLED;
 
 // Ensure process.env.DATABASE_URL starts with postgresql:// or postgres://
 if (
@@ -21,7 +21,11 @@ if (
   process.env.DATABASE_URL = vercelPostgresUrl;
 }
 
-const activeUrl = vercelPostgresUrl || process.env.DATABASE_URL;
+const rawUrl = vercelPostgresUrl || process.env.DATABASE_URL;
+const activeUrl =
+  rawUrl && !rawUrl.includes("connect_timeout=")
+    ? `${rawUrl}${rawUrl.includes("?") ? "&" : "?"}connect_timeout=30`
+    : rawUrl;
 
 export const prisma =
   globalForPrisma.prisma ??
